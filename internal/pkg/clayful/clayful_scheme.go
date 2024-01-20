@@ -4,20 +4,7 @@ type ClayfulProduct struct {
     ID          string    `json:"_id"`
     Name        string    `json:"name"`
     Price       PriceInfo `json:"price"`
-    // Discount    Discount  `json:"discount"`
-    // Shipping    Shipping  `json:"shipping"`
-    // Rating      Rating    `json:"rating"`
-    // Bundled     bool      `json:"bundled"`
-    // Available   bool      `json:"available"`
-    // Brand       Brand     `json:"brand"`
-    // Thumbnail   Image     `json:"thumbnail"`
-    // // TaxCategories omitted as it's an empty array in the example
-    // TotalReview Count     `json:"totalReview"`
-    // Collections []Collection `json:"collections"`
-    // Catalogs    []Catalog `json:"catalogs"`
-    // Options     []Option  `json:"options"`
     Variants    []Variant `json:"variants"`
-
 }
 
 type PriceInfo struct {
