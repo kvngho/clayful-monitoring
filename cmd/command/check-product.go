@@ -41,7 +41,10 @@ var CheckProductCmd = &cobra.Command{
 				switch product.Clayful_options.(type) {
 				case string:
 					if string(product.Clayful_options.(string)) != res.Variants[0].ID {
-						sqs.Publish(product.Clayful_id)
+						sqs.Publish(infra.SQSMessage{
+							Type: "product",
+							ClayfulID: product.Clayful_id,
+						})
 					}
 				default:
 					setDeepingOption := make(map[string]struct{})
@@ -55,7 +58,10 @@ var CheckProductCmd = &cobra.Command{
 						setClayfulOption[v.ID] = struct{}{}
 					}
 					if !utils.IsEqual(setClayfulOption, setDeepingOption) {
-						sqs.Publish(product.Clayful_id)
+						sqs.Publish(infra.SQSMessage{
+							Type: "product",
+							ClayfulID: product.Clayful_id,
+						})
 					}
 				}
 				

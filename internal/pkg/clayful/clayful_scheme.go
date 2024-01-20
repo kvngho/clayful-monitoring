@@ -56,3 +56,16 @@ type OptionVariant struct {
     ID       string `json:"_id"`
 }
 
+type ClayfulCoupon struct {
+    ID          string      `json:"_id"`
+    Name        string      `json:"name"`
+    Active      bool        `json:"active"`
+    ExpiresAt   TimeData    `json:"expiresAt"`
+}
+
+
+type TimeData struct {
+    Raw       string `json:"raw"`
+    Formatted string `json:"formatted"`
+    Ago       string `json:"ago"`
+}

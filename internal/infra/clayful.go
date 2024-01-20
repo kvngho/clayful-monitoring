@@ -80,3 +80,39 @@ func (c *Clayful) GetProduct(ctx context.Context, productID string) *clayful.Cla
 	}
 	return clayfulResponse
 }
+
+func (c *Clayful) GetCoupon(ctx context.Context, couponID string) *clayful.ClayfulCoupon{
+	url := fmt.Sprintf("https://api.clayful.io/v1/coupons/%s", couponID)
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		log.Fatalln("req error")
+		return nil
+	}
+
+	for k, v := range c.header {
+		req.Header.Set(k, v)
+	}
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatalln("do error")
+		return nil
+	}
+	defer resp.Body.Close()
+
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalln("read error")
+		return nil
+	}
+
+	clayfulResponse := &clayful.ClayfulCoupon{}
+
+	if err := json.Unmarshal(body, clayfulResponse); err != nil {
+		log.Fatalln("Unmarshal error")
+		return nil
+	}
+	return clayfulResponse
+}

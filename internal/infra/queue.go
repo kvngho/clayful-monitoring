@@ -2,6 +2,7 @@ package infra
 
 import (
 	"context"
+	"encoding/json"
 	"log"
 
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -46,10 +47,15 @@ func NewSQSService(cfg SQSConfig) *SQS {
 	}
 }
 
-func (s *SQS) Publish(messageBody string) *sqs.SendMessageOutput{
+func (s *SQS) Publish(message SQSMessage) *sqs.SendMessageOutput{
+	jsonMsg, err := json.Marshal(message)
+	if err != nil {
+		log.Fatalln("error: ", err)
+	}
+	stringJson := string(jsonMsg)
 	input := &sqs.SendMessageInput{
 		QueueUrl: &s.Url,
-		MessageBody: &messageBody,
+		MessageBody: &stringJson,
 	}
 	output, err := s.Svc.SendMessage(context.Background(), input)
 	if err != nil {
@@ -57,4 +63,9 @@ func (s *SQS) Publish(messageBody string) *sqs.SendMessageOutput{
 		return nil
 	}
 	return output
+}
+
+type SQSMessage struct {
+	Type string `json:"type"`
+	ClayfulID string `json:"clayful_id"`
 }

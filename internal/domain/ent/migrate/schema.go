@@ -9,6 +9,20 @@ import (
 )
 
 var (
+	// ShopCouponallColumns holds the columns for the "shop_couponall" table.
+	ShopCouponallColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "_id", Type: field.TypeString},
+		{Name: "name", Type: field.TypeString},
+		{Name: "end_date", Type: field.TypeTime},
+		{Name: "active", Type: field.TypeBool},
+	}
+	// ShopCouponallTable holds the schema information for the "shop_couponall" table.
+	ShopCouponallTable = &schema.Table{
+		Name:       "shop_couponall",
+		Columns:    ShopCouponallColumns,
+		PrimaryKey: []*schema.Column{ShopCouponallColumns[0]},
+	}
 	// ProductProductColumns holds the columns for the "product_product" table.
 	ProductProductColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -34,12 +48,16 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		ShopCouponallTable,
 		ProductProductTable,
 		UsersTable,
 	}
 )
 
 func init() {
+	ShopCouponallTable.Annotation = &entsql.Annotation{
+		Table: "shop_couponall",
+	}
 	ProductProductTable.Annotation = &entsql.Annotation{
 		Table: "product_product",
 	}
