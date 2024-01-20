@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
 	"github.com/spf13/viper"
@@ -63,6 +64,28 @@ func (s *SQS) Publish(message SQSMessage) *sqs.SendMessageOutput{
 		return nil
 	}
 	return output
+}
+
+func (s *SQS) Receive() (*sqs.ReceiveMessageOutput, error){
+	input := &sqs.ReceiveMessageInput{
+		QueueUrl: &s.Url,
+		MaxNumberOfMessages: *aws.Int32(10),
+		WaitTimeSeconds: *aws.Int32(20),
+	}
+
+	resp, err := s.Svc.ReceiveMessage(context.Background(), input)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (s *SQS) ExplicitACK (receiptHandle *string) error {
+	_, err := s.Svc.DeleteMessage(context.Background(), &sqs.DeleteMessageInput{
+		QueueUrl: &s.Url,
+		ReceiptHandle: receiptHandle,
+	})
+	return err
 }
 
 type SQSMessage struct {

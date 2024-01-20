@@ -13,6 +13,7 @@ import (
 func init () {
 	rootCmd.AddCommand(command.CheckProductCmd)
 	rootCmd.AddCommand(command.CheckCouponCmd)
+	rootCmd.AddCommand(command.SyncCmd)
 }
 var rootCmd = &cobra.Command{
 	Use: "monitor [sub]",
