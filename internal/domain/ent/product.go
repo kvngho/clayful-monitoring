@@ -19,6 +19,8 @@ type Product struct {
 	ID int `json:"id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
+	// PriceDeeping holds the value of the "price_deeping" field.
+	PriceDeeping int `json:"price_deeping,omitempty"`
 	// ClayfulID holds the value of the "clayful_id" field.
 	ClayfulID string `json:"clayful_id,omitempty"`
 	// ClayfulOptions holds the value of the "clayful_options" field.
@@ -33,7 +35,7 @@ func (*Product) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case product.FieldClayfulOptions:
 			values[i] = new([]byte)
-		case product.FieldID:
+		case product.FieldID, product.FieldPriceDeeping:
 			values[i] = new(sql.NullInt64)
 		case product.FieldName, product.FieldClayfulID:
 			values[i] = new(sql.NullString)
@@ -63,6 +65,12 @@ func (pr *Product) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
 				pr.Name = value.String
+			}
+		case product.FieldPriceDeeping:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field price_deeping", values[i])
+			} else if value.Valid {
+				pr.PriceDeeping = int(value.Int64)
 			}
 		case product.FieldClayfulID:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -116,6 +124,9 @@ func (pr *Product) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v, ", pr.ID))
 	builder.WriteString("name=")
 	builder.WriteString(pr.Name)
+	builder.WriteString(", ")
+	builder.WriteString("price_deeping=")
+	builder.WriteString(fmt.Sprintf("%v", pr.PriceDeeping))
 	builder.WriteString(", ")
 	builder.WriteString("clayful_id=")
 	builder.WriteString(pr.ClayfulID)

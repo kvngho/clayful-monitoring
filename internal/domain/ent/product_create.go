@@ -33,6 +33,12 @@ func (pc *ProductCreate) SetNillableName(s *string) *ProductCreate {
 	return pc
 }
 
+// SetPriceDeeping sets the "price_deeping" field.
+func (pc *ProductCreate) SetPriceDeeping(i int) *ProductCreate {
+	pc.mutation.SetPriceDeeping(i)
+	return pc
+}
+
 // SetClayfulID sets the "clayful_id" field.
 func (pc *ProductCreate) SetClayfulID(s string) *ProductCreate {
 	pc.mutation.SetClayfulID(s)
@@ -109,6 +115,14 @@ func (pc *ProductCreate) check() error {
 	if _, ok := pc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Product.name"`)}
 	}
+	if _, ok := pc.mutation.PriceDeeping(); !ok {
+		return &ValidationError{Name: "price_deeping", err: errors.New(`ent: missing required field "Product.price_deeping"`)}
+	}
+	if v, ok := pc.mutation.PriceDeeping(); ok {
+		if err := product.PriceDeepingValidator(v); err != nil {
+			return &ValidationError{Name: "price_deeping", err: fmt.Errorf(`ent: validator failed for field "Product.price_deeping": %w`, err)}
+		}
+	}
 	if _, ok := pc.mutation.ClayfulID(); !ok {
 		return &ValidationError{Name: "clayful_id", err: errors.New(`ent: missing required field "Product.clayful_id"`)}
 	}
@@ -152,6 +166,10 @@ func (pc *ProductCreate) createSpec() (*Product, *sqlgraph.CreateSpec) {
 	if value, ok := pc.mutation.Name(); ok {
 		_spec.SetField(product.FieldName, field.TypeString, value)
 		_node.Name = value
+	}
+	if value, ok := pc.mutation.PriceDeeping(); ok {
+		_spec.SetField(product.FieldPriceDeeping, field.TypeInt, value)
+		_node.PriceDeeping = value
 	}
 	if value, ok := pc.mutation.ClayfulID(); ok {
 		_spec.SetField(product.FieldClayfulID, field.TypeString, value)

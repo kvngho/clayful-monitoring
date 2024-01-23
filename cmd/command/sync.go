@@ -22,18 +22,22 @@ var SyncCmd = &cobra.Command{
 		log.Println("sync start")
 
 		sqs := infra.NewSQSService(infra.SQSConfigFromViper())
-		
-		messages, err := sqs.Receive()
-		if err != nil {
-			log.Fatalln("error: ", err)
-		}
-		for _, message := range messages.Messages {
-			go func(message types.Message) {
-				defer sqs.ExplicitACK(message.ReceiptHandle)
-			}(message)
+		for {
+			messages, err := sqs.Receive()
+			if len(messages.Messages) == 0 {
+				break
+			}
+			if err != nil {
+				log.Fatalln("error: ", err)
+			}
+			for _, message := range messages.Messages {
+				go func(message types.Message) {
+					defer sqs.ExplicitACK(message.ReceiptHandle)
+				}(message)
 
-			fmt.Println(*message.Body)
-			sqs.ExplicitACK(message.ReceiptHandle)
+				fmt.Println(*message.Body)
+				sqs.ExplicitACK(message.ReceiptHandle)
+			}
 		}
 		return nil
 	},

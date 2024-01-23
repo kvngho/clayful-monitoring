@@ -34,6 +34,7 @@ func (c Checker) FindProductDeepingAndClayful(ctx context.Context) ([]db.Product
 			Name: p.Name,
 			Clayful_id: p.ClayfulID,
 			Clayful_options: p.ClayfulOptions,
+			Price_deeping: p.PriceDeeping,
 		})
 	}
 

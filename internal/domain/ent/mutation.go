@@ -527,16 +527,18 @@ func (m *CouponMutation) ResetEdge(name string) error {
 // ProductMutation represents an operation that mutates the Product nodes in the graph.
 type ProductMutation struct {
 	config
-	op              Op
-	typ             string
-	id              *int
-	name            *string
-	clayful_id      *string
-	clayful_options *any
-	clearedFields   map[string]struct{}
-	done            bool
-	oldValue        func(context.Context) (*Product, error)
-	predicates      []predicate.Product
+	op               Op
+	typ              string
+	id               *int
+	name             *string
+	price_deeping    *int
+	addprice_deeping *int
+	clayful_id       *string
+	clayful_options  *any
+	clearedFields    map[string]struct{}
+	done             bool
+	oldValue         func(context.Context) (*Product, error)
+	predicates       []predicate.Product
 }
 
 var _ ent.Mutation = (*ProductMutation)(nil)
@@ -679,6 +681,62 @@ func (m *ProductMutation) ResetName() {
 	m.name = nil
 }
 
+// SetPriceDeeping sets the "price_deeping" field.
+func (m *ProductMutation) SetPriceDeeping(i int) {
+	m.price_deeping = &i
+	m.addprice_deeping = nil
+}
+
+// PriceDeeping returns the value of the "price_deeping" field in the mutation.
+func (m *ProductMutation) PriceDeeping() (r int, exists bool) {
+	v := m.price_deeping
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPriceDeeping returns the old "price_deeping" field's value of the Product entity.
+// If the Product object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ProductMutation) OldPriceDeeping(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPriceDeeping is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPriceDeeping requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPriceDeeping: %w", err)
+	}
+	return oldValue.PriceDeeping, nil
+}
+
+// AddPriceDeeping adds i to the "price_deeping" field.
+func (m *ProductMutation) AddPriceDeeping(i int) {
+	if m.addprice_deeping != nil {
+		*m.addprice_deeping += i
+	} else {
+		m.addprice_deeping = &i
+	}
+}
+
+// AddedPriceDeeping returns the value that was added to the "price_deeping" field in this mutation.
+func (m *ProductMutation) AddedPriceDeeping() (r int, exists bool) {
+	v := m.addprice_deeping
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetPriceDeeping resets all changes to the "price_deeping" field.
+func (m *ProductMutation) ResetPriceDeeping() {
+	m.price_deeping = nil
+	m.addprice_deeping = nil
+}
+
 // SetClayfulID sets the "clayful_id" field.
 func (m *ProductMutation) SetClayfulID(s string) {
 	m.clayful_id = &s
@@ -798,9 +856,12 @@ func (m *ProductMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ProductMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 4)
 	if m.name != nil {
 		fields = append(fields, product.FieldName)
+	}
+	if m.price_deeping != nil {
+		fields = append(fields, product.FieldPriceDeeping)
 	}
 	if m.clayful_id != nil {
 		fields = append(fields, product.FieldClayfulID)
@@ -818,6 +879,8 @@ func (m *ProductMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case product.FieldName:
 		return m.Name()
+	case product.FieldPriceDeeping:
+		return m.PriceDeeping()
 	case product.FieldClayfulID:
 		return m.ClayfulID()
 	case product.FieldClayfulOptions:
@@ -833,6 +896,8 @@ func (m *ProductMutation) OldField(ctx context.Context, name string) (ent.Value,
 	switch name {
 	case product.FieldName:
 		return m.OldName(ctx)
+	case product.FieldPriceDeeping:
+		return m.OldPriceDeeping(ctx)
 	case product.FieldClayfulID:
 		return m.OldClayfulID(ctx)
 	case product.FieldClayfulOptions:
@@ -852,6 +917,13 @@ func (m *ProductMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetName(v)
+		return nil
+	case product.FieldPriceDeeping:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPriceDeeping(v)
 		return nil
 	case product.FieldClayfulID:
 		v, ok := value.(string)
@@ -874,13 +946,21 @@ func (m *ProductMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *ProductMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addprice_deeping != nil {
+		fields = append(fields, product.FieldPriceDeeping)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *ProductMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case product.FieldPriceDeeping:
+		return m.AddedPriceDeeping()
+	}
 	return nil, false
 }
 
@@ -889,6 +969,13 @@ func (m *ProductMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *ProductMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case product.FieldPriceDeeping:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddPriceDeeping(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Product numeric field %s", name)
 }
@@ -927,6 +1014,9 @@ func (m *ProductMutation) ResetField(name string) error {
 	switch name {
 	case product.FieldName:
 		m.ResetName()
+		return nil
+	case product.FieldPriceDeeping:
+		m.ResetPriceDeeping()
 		return nil
 	case product.FieldClayfulID:
 		m.ResetClayfulID()

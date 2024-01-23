@@ -23,6 +23,7 @@ func (Product) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("id").Positive(),
 		field.String("name").Default(""),
+		field.Int("price_deeping").Positive(),
 		field.String("clayful_id").Default(""),
 		field.Any("clayful_options").Optional(),
 	}

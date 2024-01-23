@@ -41,6 +41,27 @@ func (pu *ProductUpdate) SetNillableName(s *string) *ProductUpdate {
 	return pu
 }
 
+// SetPriceDeeping sets the "price_deeping" field.
+func (pu *ProductUpdate) SetPriceDeeping(i int) *ProductUpdate {
+	pu.mutation.ResetPriceDeeping()
+	pu.mutation.SetPriceDeeping(i)
+	return pu
+}
+
+// SetNillablePriceDeeping sets the "price_deeping" field if the given value is not nil.
+func (pu *ProductUpdate) SetNillablePriceDeeping(i *int) *ProductUpdate {
+	if i != nil {
+		pu.SetPriceDeeping(*i)
+	}
+	return pu
+}
+
+// AddPriceDeeping adds i to the "price_deeping" field.
+func (pu *ProductUpdate) AddPriceDeeping(i int) *ProductUpdate {
+	pu.mutation.AddPriceDeeping(i)
+	return pu
+}
+
 // SetClayfulID sets the "clayful_id" field.
 func (pu *ProductUpdate) SetClayfulID(s string) *ProductUpdate {
 	pu.mutation.SetClayfulID(s)
@@ -99,7 +120,20 @@ func (pu *ProductUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (pu *ProductUpdate) check() error {
+	if v, ok := pu.mutation.PriceDeeping(); ok {
+		if err := product.PriceDeepingValidator(v); err != nil {
+			return &ValidationError{Name: "price_deeping", err: fmt.Errorf(`ent: validator failed for field "Product.price_deeping": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (pu *ProductUpdate) sqlSave(ctx context.Context) (n int, err error) {
+	if err := pu.check(); err != nil {
+		return n, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(product.Table, product.Columns, sqlgraph.NewFieldSpec(product.FieldID, field.TypeInt))
 	if ps := pu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -110,6 +144,12 @@ func (pu *ProductUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := pu.mutation.Name(); ok {
 		_spec.SetField(product.FieldName, field.TypeString, value)
+	}
+	if value, ok := pu.mutation.PriceDeeping(); ok {
+		_spec.SetField(product.FieldPriceDeeping, field.TypeInt, value)
+	}
+	if value, ok := pu.mutation.AddedPriceDeeping(); ok {
+		_spec.AddField(product.FieldPriceDeeping, field.TypeInt, value)
 	}
 	if value, ok := pu.mutation.ClayfulID(); ok {
 		_spec.SetField(product.FieldClayfulID, field.TypeString, value)
@@ -151,6 +191,27 @@ func (puo *ProductUpdateOne) SetNillableName(s *string) *ProductUpdateOne {
 	if s != nil {
 		puo.SetName(*s)
 	}
+	return puo
+}
+
+// SetPriceDeeping sets the "price_deeping" field.
+func (puo *ProductUpdateOne) SetPriceDeeping(i int) *ProductUpdateOne {
+	puo.mutation.ResetPriceDeeping()
+	puo.mutation.SetPriceDeeping(i)
+	return puo
+}
+
+// SetNillablePriceDeeping sets the "price_deeping" field if the given value is not nil.
+func (puo *ProductUpdateOne) SetNillablePriceDeeping(i *int) *ProductUpdateOne {
+	if i != nil {
+		puo.SetPriceDeeping(*i)
+	}
+	return puo
+}
+
+// AddPriceDeeping adds i to the "price_deeping" field.
+func (puo *ProductUpdateOne) AddPriceDeeping(i int) *ProductUpdateOne {
+	puo.mutation.AddPriceDeeping(i)
 	return puo
 }
 
@@ -225,7 +286,20 @@ func (puo *ProductUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (puo *ProductUpdateOne) check() error {
+	if v, ok := puo.mutation.PriceDeeping(); ok {
+		if err := product.PriceDeepingValidator(v); err != nil {
+			return &ValidationError{Name: "price_deeping", err: fmt.Errorf(`ent: validator failed for field "Product.price_deeping": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (puo *ProductUpdateOne) sqlSave(ctx context.Context) (_node *Product, err error) {
+	if err := puo.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(product.Table, product.Columns, sqlgraph.NewFieldSpec(product.FieldID, field.TypeInt))
 	id, ok := puo.mutation.ID()
 	if !ok {
@@ -253,6 +327,12 @@ func (puo *ProductUpdateOne) sqlSave(ctx context.Context) (_node *Product, err e
 	}
 	if value, ok := puo.mutation.Name(); ok {
 		_spec.SetField(product.FieldName, field.TypeString, value)
+	}
+	if value, ok := puo.mutation.PriceDeeping(); ok {
+		_spec.SetField(product.FieldPriceDeeping, field.TypeInt, value)
+	}
+	if value, ok := puo.mutation.AddedPriceDeeping(); ok {
+		_spec.AddField(product.FieldPriceDeeping, field.TypeInt, value)
 	}
 	if value, ok := puo.mutation.ClayfulID(); ok {
 		_spec.SetField(product.FieldClayfulID, field.TypeString, value)

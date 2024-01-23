@@ -27,6 +27,7 @@ var (
 	ProductProductColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "name", Type: field.TypeString, Default: ""},
+		{Name: "price_deeping", Type: field.TypeInt},
 		{Name: "clayful_id", Type: field.TypeString, Default: ""},
 		{Name: "clayful_options", Type: field.TypeJSON, Nullable: true},
 	}

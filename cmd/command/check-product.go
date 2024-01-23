@@ -42,9 +42,18 @@ var CheckProductCmd = &cobra.Command{
 				case string:
 					if string(product.Clayful_options.(string)) != res.Variants[0].ID {
 						sqs.Publish(infra.SQSMessage{
-							Type: "product",
+							Type: "product-clayfulid",
 							ClayfulID: product.Clayful_id,
 						})
+						fmt.Println("clayful id is not matched")
+					}
+
+					if product.Price_deeping != res.Price.Sale.Raw {
+						sqs.Publish(infra.SQSMessage{
+							Type: "product-price",
+							ClayfulID: product.Clayful_id,
+						})
+						fmt.Println("price is not matched")
 					}
 				default:
 					setDeepingOption := make(map[string]struct{})
@@ -56,10 +65,17 @@ var CheckProductCmd = &cobra.Command{
 					}
 					for _, v := range(res.Variants) {
 						setClayfulOption[v.ID] = struct{}{}
+						if product.Price_deeping != v.Price.Sale.Raw {
+							sqs.Publish(infra.SQSMessage{
+								Type: "product-price",
+								ClayfulID: product.Clayful_id,
+							})
+							fmt.Println("price is not matched")
+						}
 					}
 					if !utils.IsEqual(setClayfulOption, setDeepingOption) {
 						sqs.Publish(infra.SQSMessage{
-							Type: "product",
+							Type: "product-options",
 							ClayfulID: product.Clayful_id,
 						})
 					}

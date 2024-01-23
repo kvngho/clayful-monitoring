@@ -57,6 +57,11 @@ func Name(v string) predicate.Product {
 	return predicate.Product(sql.FieldEQ(FieldName, v))
 }
 
+// PriceDeeping applies equality check predicate on the "price_deeping" field. It's identical to PriceDeepingEQ.
+func PriceDeeping(v int) predicate.Product {
+	return predicate.Product(sql.FieldEQ(FieldPriceDeeping, v))
+}
+
 // ClayfulID applies equality check predicate on the "clayful_id" field. It's identical to ClayfulIDEQ.
 func ClayfulID(v string) predicate.Product {
 	return predicate.Product(sql.FieldEQ(FieldClayfulID, v))
@@ -125,6 +130,46 @@ func NameEqualFold(v string) predicate.Product {
 // NameContainsFold applies the ContainsFold predicate on the "name" field.
 func NameContainsFold(v string) predicate.Product {
 	return predicate.Product(sql.FieldContainsFold(FieldName, v))
+}
+
+// PriceDeepingEQ applies the EQ predicate on the "price_deeping" field.
+func PriceDeepingEQ(v int) predicate.Product {
+	return predicate.Product(sql.FieldEQ(FieldPriceDeeping, v))
+}
+
+// PriceDeepingNEQ applies the NEQ predicate on the "price_deeping" field.
+func PriceDeepingNEQ(v int) predicate.Product {
+	return predicate.Product(sql.FieldNEQ(FieldPriceDeeping, v))
+}
+
+// PriceDeepingIn applies the In predicate on the "price_deeping" field.
+func PriceDeepingIn(vs ...int) predicate.Product {
+	return predicate.Product(sql.FieldIn(FieldPriceDeeping, vs...))
+}
+
+// PriceDeepingNotIn applies the NotIn predicate on the "price_deeping" field.
+func PriceDeepingNotIn(vs ...int) predicate.Product {
+	return predicate.Product(sql.FieldNotIn(FieldPriceDeeping, vs...))
+}
+
+// PriceDeepingGT applies the GT predicate on the "price_deeping" field.
+func PriceDeepingGT(v int) predicate.Product {
+	return predicate.Product(sql.FieldGT(FieldPriceDeeping, v))
+}
+
+// PriceDeepingGTE applies the GTE predicate on the "price_deeping" field.
+func PriceDeepingGTE(v int) predicate.Product {
+	return predicate.Product(sql.FieldGTE(FieldPriceDeeping, v))
+}
+
+// PriceDeepingLT applies the LT predicate on the "price_deeping" field.
+func PriceDeepingLT(v int) predicate.Product {
+	return predicate.Product(sql.FieldLT(FieldPriceDeeping, v))
+}
+
+// PriceDeepingLTE applies the LTE predicate on the "price_deeping" field.
+func PriceDeepingLTE(v int) predicate.Product {
+	return predicate.Product(sql.FieldLTE(FieldPriceDeeping, v))
 }
 
 // ClayfulIDEQ applies the EQ predicate on the "clayful_id" field.

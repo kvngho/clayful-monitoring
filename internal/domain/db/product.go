@@ -5,5 +5,6 @@ type Product struct {
 	Name string
 	Clayful_id string
 	Clayful_options any
+	Price_deeping int
 	// Clayful_options any
 }

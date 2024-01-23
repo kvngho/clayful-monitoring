@@ -13,6 +13,8 @@ const (
 	FieldID = "id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
+	// FieldPriceDeeping holds the string denoting the price_deeping field in the database.
+	FieldPriceDeeping = "price_deeping"
 	// FieldClayfulID holds the string denoting the clayful_id field in the database.
 	FieldClayfulID = "clayful_id"
 	// FieldClayfulOptions holds the string denoting the clayful_options field in the database.
@@ -25,6 +27,7 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldName,
+	FieldPriceDeeping,
 	FieldClayfulID,
 	FieldClayfulOptions,
 }
@@ -42,6 +45,8 @@ func ValidColumn(column string) bool {
 var (
 	// DefaultName holds the default value on creation for the "name" field.
 	DefaultName string
+	// PriceDeepingValidator is a validator for the "price_deeping" field. It is called by the builders before save.
+	PriceDeepingValidator func(int) error
 	// DefaultClayfulID holds the default value on creation for the "clayful_id" field.
 	DefaultClayfulID string
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
@@ -59,6 +64,11 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 // ByName orders the results by the name field.
 func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
+}
+
+// ByPriceDeeping orders the results by the price_deeping field.
+func ByPriceDeeping(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPriceDeeping, opts...).ToFunc()
 }
 
 // ByClayfulID orders the results by the clayful_id field.
