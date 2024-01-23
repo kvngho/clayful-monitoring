@@ -71,6 +71,7 @@ var CheckProductCmd = &cobra.Command{
 								ClayfulID: product.Clayful_id,
 							})
 							fmt.Println("price is not matched")
+							break
 						}
 					}
 					if !utils.IsEqual(setClayfulOption, setDeepingOption) {

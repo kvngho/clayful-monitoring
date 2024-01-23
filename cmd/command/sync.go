@@ -1,11 +1,13 @@
 package command
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/sqs/types"
 	"github.com/kvngho/clayful-monitoring/internal/infra"
+	"github.com/kvngho/clayful-monitoring/internal/pkg/slack"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -22,6 +24,9 @@ var SyncCmd = &cobra.Command{
 		log.Println("sync start")
 
 		sqs := infra.NewSQSService(infra.SQSConfigFromViper())
+		
+		messageRecv := &infra.SQSMessage{}
+		messageList := make([]infra.SQSMessage, 0, 100)
 		for {
 			messages, err := sqs.Receive()
 			if len(messages.Messages) == 0 {
@@ -36,9 +41,14 @@ var SyncCmd = &cobra.Command{
 				}(message)
 
 				fmt.Println(*message.Body)
+				if err := json.Unmarshal([]byte(*message.Body), messageRecv); err != nil {
+					fmt.Println("error unmarshal")
+				}
+				messageList = append(messageList, *messageRecv)
 				sqs.ExplicitACK(message.ReceiptHandle)
 			}
 		}
+		slack.SendSlackNotification(viper.GetString("webhook_url"), messageList)
 		return nil
 	},
 }
