@@ -63,15 +63,19 @@ var CheckProductCmd = &cobra.Command{
 					for _, v := range(optionMap) {
 						setDeepingOption[v.(string)] = struct{}{}
 					}
+
+					isSended := false
 					for _, v := range(res.Variants) {
 						setClayfulOption[v.ID] = struct{}{}
 						if product.Price_deeping != v.Price.Sale.Raw {
-							sqs.Publish(infra.SQSMessage{
-								Type: "product-price",
-								ClayfulID: product.Clayful_id,
-							})
-							fmt.Println("price is not matched")
-							break
+							if !isSended {
+								sqs.Publish(infra.SQSMessage{
+									Type: "product-price",
+									ClayfulID: product.Clayful_id,
+								})
+								fmt.Println("price is not matched")
+								isSended=true
+							}
 						}
 					}
 					if !utils.IsEqual(setClayfulOption, setDeepingOption) {
@@ -80,6 +84,7 @@ var CheckProductCmd = &cobra.Command{
 							ClayfulID: product.Clayful_id,
 						})
 					}
+					isSended = false
 				}
 				
 			}
